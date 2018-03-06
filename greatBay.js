@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'password',
-    database : 'playlistDB'
+    database : 'greatbay'
 });
 const query = connection.query;
 const questions = [
@@ -28,7 +28,7 @@ const questions = [
 ]
 var whereClause = "";
 // Initialize
-connection.connect(function(err){;
+connection.connect(function(err){
     if (err){throw err};
     promptUser();
 });
@@ -36,25 +36,12 @@ connection.connect(function(err){;
 function promptUser(){
     inquirer.prompt(questions[0]).then(function(inquirerResponse){
         var menuOptions = inquirerResponse.menuOptions;
-        if(menuOptions = "Post an Item"){
-            whereClause = "";
-            searchQuery(whereClause);
+        if(menuOptions === "Post an Item"){
+            //whereClause = "";
+            //searchQuery(whereClause);
         }
-        else if(menuOptions = "Bid on an Item"){
-            // SQL: Show List of Items
-            inquirer.prompt(questions[1]).then(function(inquirerResponse){
-                var itemId = inquirerResponse.selectItem;
-                inquirer.prompt(questions[2]).then(function(inquirerResponse){
-                    var bid = inquirerResponse.bid;
-                    whereClause = `SELECT price FROM greattable WHERE id = '${itemId}'`;
-                })
-            })
-            
-            // 
-            // (IF USER BID = HIGHER, INFORM SUCCESS)
-            // (IF USER BID = LOWER, INFORM FAILURE AND GO BACK TO FIRST QUESTION)
-            
-            updateQuery(whereClause);
+        else if(menuOptions === "Bid on an Item"){
+            bidOnItem();
         }
     })
 };
@@ -62,27 +49,34 @@ function promptUser(){
 function searchQuery(whereClause){
     connection.query(whereClause,function(error,results,fields){
         if (error) throw error;
-        if(results.length > 0){
-            for(var i = 0; i < results.length; i++){
-                
-            }
-        }
-        else{
-            if(results.affectedRows > 0){
-                console.log(`Success!`)
-            }
-        }
     });
-    connection.end();
 }
 
-
-function updateQuery(whereClause){
+function bidOnItem(){
+    whereClause = `SELECT * FROM greattable`;
     connection.query(whereClause,function(error,results,fields){
-        if (error) throw error;
-        if(results.affectedRows > 0){
-            console.log(`Success!`)
+        if(results.length > 0){
+            for(var i = 0; i < results.length; i++){
+                console.log(`${results[i].id}. ${results[i].name} ($${results[i].price})`);
+            }
+            inquirer.prompt(questions[1]).then(function(inquirerResponse){
+                var itemId = inquirerResponse.selectItem;
+                inquirer.prompt(questions[2]).then(function(inquirerResponse){
+                    var bid = inquirerResponse.bid;
+                    whereClause = `SELECT price FROM greattable WHERE id = ${itemId}`;
+                    connection.query(whereClause,function(error,results,fields){
+                        var price = results[0].price;
+                        if(bid > price){
+                            console.log("Congratulations! You successfully placed your bid.")
+                            connection.end();
+                        }
+                        else if(bid <= price){
+                            console.log("Sorry, someone else has out-bid you. Please try again.")
+                            promptUser();
+                        }
+                    })
+                })
+            })
         }
     });
-    connection.end();
 }
