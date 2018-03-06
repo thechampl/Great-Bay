@@ -15,6 +15,16 @@ const questions = [
         name: "menuOptions",
         choices: ["Post an Item","Bid on an Item"]
     },
+    {
+        type: "input",
+        message: "Enter the ID of the Item You Wish to Bid On: ",
+        name: "selectItem"
+    },
+    {
+        type: "input",
+        message: "Enter Your Bid: ",
+        name: "bid"
+    }
 ]
 var whereClause = "";
 // Initialize
@@ -28,16 +38,28 @@ function promptUser(){
         var menuOptions = inquirerResponse.menuOptions;
         if(menuOptions = "Post an Item"){
             whereClause = "";
-            updateQuery(whereClause);
+            searchQuery(whereClause);
         }
         else if(menuOptions = "Bid on an Item"){
-            whereClause = "";
+            // SQL: Show List of Items
+            inquirer.prompt(questions[1]).then(function(inquirerResponse){
+                var itemId = inquirerResponse.selectItem;
+                inquirer.prompt(questions[2]).then(function(inquirerResponse){
+                    var bid = inquirerResponse.bid;
+                    whereClause = `SELECT price FROM greattable WHERE id = '${itemId}'`;
+                })
+            })
+            
+            // 
+            // (IF USER BID = HIGHER, INFORM SUCCESS)
+            // (IF USER BID = LOWER, INFORM FAILURE AND GO BACK TO FIRST QUESTION)
+            
             updateQuery(whereClause);
         }
     })
 };
 
-function updateQuery(whereClause){
+function searchQuery(whereClause){
     connection.query(whereClause,function(error,results,fields){
         if (error) throw error;
         if(results.length > 0){
@@ -49,6 +71,17 @@ function updateQuery(whereClause){
             if(results.affectedRows > 0){
                 console.log(`Success!`)
             }
+        }
+    });
+    connection.end();
+}
+
+
+function updateQuery(whereClause){
+    connection.query(whereClause,function(error,results,fields){
+        if (error) throw error;
+        if(results.affectedRows > 0){
+            console.log(`Success!`)
         }
     });
     connection.end();
