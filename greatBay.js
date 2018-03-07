@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'password',
-    database : 'playlistDB'
+    database : 'greatbay'
 });
 const query = connection.query;
 const questions = [
@@ -24,11 +24,21 @@ const questions = [
         type: "input",
         message: "Enter Your Bid: ",
         name: "bid"
+    },
+    {
+        type: "input",
+        message: "Enter your item name: ",
+        name: "itemName"
+    },
+    {
+        type: "input",
+        message: "Enter your item price: ",
+        name: "itemPrice"
     }
 ]
 var whereClause = "";
 // Initialize
-connection.connect(function(err){;
+connection.connect(function(err){
     if (err){throw err};
     promptUser();
 });
@@ -37,9 +47,14 @@ function promptUser(){
     inquirer.prompt(questions[0]).then(function(inquirerResponse){
         var menuOptions = inquirerResponse.menuOptions;
         if(menuOptions = "Post an Item"){
-            whereClause = "";
+            inquirer.prompt(questions[3]).then(function(inquirerResponse){
+                var itemName = inquirerResponse.itemName;
+                whereClause = `INSERT INTO greattable (name) VALUES name = '${itemName}'`;
             searchQuery(whereClause);
-        }
+            })
+
+    }
+
         else if(menuOptions = "Bid on an Item"){
             // SQL: Show List of Items
             inquirer.prompt(questions[1]).then(function(inquirerResponse){
@@ -60,21 +75,15 @@ function promptUser(){
 };
 
 function searchQuery(whereClause){
-    connection.query(whereClause,function(error,results,fields){
-        if (error) throw error;
-        if(results.length > 0){
-            for(var i = 0; i < results.length; i++){
-                
-            }
-        }
-        else{
-            if(results.affectedRows > 0){
-                console.log(`Success!`)
-            }
-        }
-    });
-    connection.end();
-}
+           connection.query(whereClause,function(error,results,fields){
+            if (error) throw error;
+            console.log(results)
+            
+            
+           })
+
+
+    }
 
 
 function updateQuery(whereClause){
