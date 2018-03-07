@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "greatbay",
+=======
+  "name": "Great-Bay",
+>>>>>>> bea4ebac1c4fe05141969c1cdfb5cff6013fdd2e
   "version": "1.0.0",
   "description": "",
   "main": "greatBay.js",
@@ -10,10 +14,22 @@
     "type": "git",
     "url": "git+https://github.com/thechampl/Great-Bay.git"
   },
+<<<<<<< HEAD
+=======
+  "keywords": [],
+>>>>>>> bea4ebac1c4fe05141969c1cdfb5cff6013fdd2e
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/thechampl/Great-Bay/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/thechampl/Great-Bay#readme"
+=======
+  "homepage": "https://github.com/thechampl/Great-Bay#readme",
+  "dependencies": {
+    "inquirer": "^5.1.0",
+    "mysql": "^2.15.0"
+  }
+>>>>>>> bea4ebac1c4fe05141969c1cdfb5cff6013fdd2e
 }
