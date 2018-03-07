@@ -46,16 +46,20 @@ connection.connect(function(err){
 function promptUser(){
     inquirer.prompt(questions[0]).then(function(inquirerResponse){
         var menuOptions = inquirerResponse.menuOptions;
-        if(menuOptions = "Post an Item"){
+        if(menuOptions === "Post an Item"){
             inquirer.prompt(questions[3]).then(function(inquirerResponse){
                 var itemName = inquirerResponse.itemName;
-                whereClause = `INSERT INTO greattable (name) VALUES name = '${itemName}'`;
+                inquirer.prompt(questions[4]).then(function(inquirerResponse){
+                    var itemPrice = inquirerResponse.itemPrice;
+                whereClause = `INSERT INTO greattable (name, price) VALUES ('${itemName}', ${itemPrice})`;
             searchQuery(whereClause);
+            connection.end()
+            console.log("Item Added!")
             })
-
+        })
     }
 
-        else if(menuOptions = "Bid on an Item"){
+        else if(menuOptions === "Bid on an Item"){
             // SQL: Show List of Items
             inquirer.prompt(questions[1]).then(function(inquirerResponse){
                 var itemId = inquirerResponse.selectItem;
